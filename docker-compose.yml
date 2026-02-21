@@ -1,4 +1,17 @@
 services:
+    frontend:
+      build:
+        context: ./frontend
+        dockerfile: Dockerfile
+      image: ${CONTAINER_AUTHOR}/${PROJECT_NAME}/frontend_${FRONTEND_VERSION}
+      container_name: ${PROJECT_NAME}_frontend
+      ports:
+        - ${FRONTEND_OUTER_PORT}:${FRONTEND_INNER_PORT}
+      networks:
+        finshark_network:
+          ipv4_address: ${FRONTEND_HOST_IP}
+      restart: always
+
     api:
       build:
         context: .

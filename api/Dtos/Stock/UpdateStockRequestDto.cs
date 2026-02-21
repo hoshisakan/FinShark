@@ -13,7 +13,7 @@ namespace api.Dtos.Stock
         [MaxLength(10, ErrorMessage = "Symbol must be less than 10 characters long")]
         public string Symbol { get; set; } = string.Empty;
         [Required]
-        [MaxLength(10, ErrorMessage = "Company name must be less than 10 characters long")]
+        [MaxLength(50, ErrorMessage = "Company name must be less than 50 characters long")]
         public string CompanyName { get; set; } = string.Empty;
         [Required]
         [Range(1, 1000000000)]

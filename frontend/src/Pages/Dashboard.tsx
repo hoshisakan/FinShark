@@ -201,7 +201,7 @@ export default function Dashboard() {
               value={stockForm.companyName}
               onChange={(e) => setStockForm((prev) => ({ ...prev, companyName: e.target.value }))}
               placeholder="Company Name"
-              maxLength={10}
+              maxLength={50}
               required
             />
             <input
