@@ -1,4 +1,33 @@
 services:
+    api:
+      build:
+        context: .
+        dockerfile: Dockerfile
+        args:
+            - DOTNET_IMAGE_VERSION=${DOTNET_IMAGE_VERSION}
+            - DOTNET_LANG_NAME=${DOTNET_LANG_NAME}
+            - DOTNET_LANG_INPUTFILE=${DOTNET_LANG_INPUTFILE}
+            - DOTNET_LANG_CHARMAP=${DOTNET_LANG_CHARMAP}
+            - DOTNET_DEBIAN_FRONTEND=${DOTNET_DEBIAN_FRONTEND}
+            - DOTNET_TIME_ZONE=${DOTNET_TIME_ZONE}
+      image: ${CONTAINER_AUTHOR}/${PROJECT_NAME}/api_${API_VERSION}
+      container_name: ${PROJECT_NAME}_api
+      env_file:
+        - ${ENV_FILE_PATH}
+      environment:
+          - DOTNET_LANG_NAME=${DOTNET_LANG_NAME}
+          - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
+          - ASPNETCORE_URLS=${ASPNETCORE_URLS}
+      ports:
+        - ${API_OUTER_PORT}:${API_INNER_PORT}
+      networks:
+        finshark_network:
+          ipv4_address: ${API_HOST_IP}
+      depends_on:
+        - mssql
+      tty: true
+      restart: always
+
     mssql:
       build:
         context: ./conf/mssql
