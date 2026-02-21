@@ -35,5 +35,27 @@ namespace api.Repository
             })
             .ToListAsync();
         }
+
+        public async Task<Portfolio> CreateAsync(Portfolio portfolio)
+        {
+            await _context.Portfolios.AddAsync(portfolio);
+            await _context.SaveChangesAsync();
+            return portfolio;
+        }
+
+        public async Task<Portfolio> DeleteAsync(AppUser appUser, string symbol)
+        {
+            var portfolio = await _context.Portfolios.FirstOrDefaultAsync(x => x.AppUserId == appUser.Id && x.Stock.Symbol.ToLower() == symbol.ToLower());
+            
+            if (portfolio == null)
+            {
+                return null;
+            }
+
+            _context.Portfolios.Remove(portfolio);
+            await _context.SaveChangesAsync();
+            
+            return portfolio;
+        }
     }
 }

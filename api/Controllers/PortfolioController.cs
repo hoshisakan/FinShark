@@ -38,5 +38,64 @@ namespace api.Controllers
             var userPortfolio = await _portfolioRepo.GetUserPortfolioAsync(appUser);
             return Ok(userPortfolio);
         }
+
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> AddPortfolio(string symbol)
+        {
+            var username = User.GetUsername();
+            var appUser = await _userManager.FindByNameAsync(username);
+            var stock = await _stockRepo.GetBySymbolAsync(symbol);
+            
+            if (stock == null)
+            {
+                return BadRequest("Stock not found");
+            }
+
+            var userPortfolio = await _portfolioRepo.GetUserPortfolioAsync(appUser);
+
+            if (userPortfolio.Any(x => x.Symbol.ToLower() == symbol.ToLower()))
+            {
+                return BadRequest("Cannot add stock to portfolio twice");
+            }
+
+            var portfolioModel = new Portfolio
+            {
+                AppUserId = appUser.Id,
+                StockId = stock.Id,
+            };
+
+            var portfolio = await _portfolioRepo.CreateAsync(portfolioModel);
+
+            if (portfolio == null)
+            {
+                return StatusCode(500, "Failed to add stock to portfolio");
+            }
+            else {
+                return Created();
+            }
+        }
+
+        [HttpDelete]
+        [Authorize]
+        public async Task<IActionResult> DeletePortfolio(string symbol)
+        {
+            var username = User.GetUsername();
+            var appUser = await _userManager.FindByNameAsync(username);
+
+            var userPortfolio = await _portfolioRepo.GetUserPortfolioAsync(appUser);
+            
+            var filteredPortfolio = userPortfolio.Where(x => x.Symbol.ToLower() == symbol.ToLower()).ToList();
+        
+            if (filteredPortfolio.Count == 1)
+            {
+                await _portfolioRepo.DeleteAsync(appUser, symbol);
+            }
+            else {
+                return BadRequest("Stock not in your portfolio");
+            }
+
+            return Ok();
+        }
     }
 }
