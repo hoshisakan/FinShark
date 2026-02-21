@@ -443,3 +443,6 @@ data/
 logs/
 backup/
 temp/
+*.key
+*.crt
+*.pfx
