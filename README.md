@@ -1,61 +1,109 @@
 # FinShark
 
-FinShark 是一個以 ASP.NET Core Web API 實作的股票追蹤後端服務，使用 JWT 驗證、ASP.NET Identity、Entity Framework Core 與 SQL Server。
+FinShark 是一個完整的全端股票追蹤專案，包含：
+- `frontend`：React + Vite 前端（登入/註冊、Dashboard、Stocks、Comments、Portfolio）
+- `api`：ASP.NET Core Web API（JWT + Identity + EF Core + SQL Server）
+- `reverse_proxy`：Nginx（HTTPS、反向代理 `/api`、靜態檔掛載）
+- `mssql`：SQL Server 2022
 
-目前專案已提供 Docker 化配置（API + MSSQL），可快速在本機透過 `docker compose` 啟動整套環境。
+---
 
 ## 技術棧
 
-- .NET 8 (`api/api.csproj`)
-- ASP.NET Core Web API (Controllers)
-- Entity Framework Core + SQL Server
-- ASP.NET Identity
-- JWT Bearer Authentication
-- Swagger / OpenAPI (`Development` 環境)
-- Docker / Docker Compose
+- Frontend: React 19, Vite 7, TypeScript, Axios
+- Backend: .NET 8, ASP.NET Core, EF Core, ASP.NET Identity, JWT
+- Infra: Docker Compose, Nginx, MSSQL 2022
 
-## 專案結構
+---
 
-- `api/`：Web API 主程式與商業邏輯
-  - `Program.cs`：DI 註冊、Swagger、JWT、DbContext、Repository 設定
-  - `Controllers/`
-    - `AccountController`：註冊/登入
-    - `StockController`：股票 CRUD 與查詢
-    - `CommentController`：股票評論 CRUD
-    - `PortfolioController`：使用者投資組合管理
-  - `Data/ApplicationDBContext.cs`：EF Core DbContext + Identity role seed
-  - `Migrations/`：資料庫 migration
-- `docker-compose.yml`：API 與 MSSQL 服務編排
-- `Dockerfile`：API 容器建置（Ubuntu + .NET SDK + publish）
-- `conf/mssql/Dockerfile`：MSSQL 容器鏡像定義
-- `.env`：Docker 參數（port、network、DB 帳密、ASPNETCORE_* 等）
+## 專案架構
 
-## API 路由概覽
+```text
+FinShark/
+├─ frontend/                # React + Vite 前端
+├─ api/                     # ASP.NET Core Web API
+├─ conf/nginx/              # Nginx 設定與 Dockerfile
+├─ conf/mssql/              # MSSQL Dockerfile
+├─ certs/nginx/             # HTTPS 憑證
+├─ docker-compose.yml
+└─ .env                     # Docker 服務與網路參數
+```
 
-- `POST /api/account/register`
-- `POST /api/account/login`
-- `GET /api/stock`（需授權）
-- `GET /api/stock/{id}`
-- `POST /api/comment/{stockId}`
-- `GET /api/portfolio`（需授權）
-- `POST /api/portfolio?symbol={symbol}`（需授權）
+---
 
-## Docker 架構說明
+## Docker 服務說明
 
-`docker-compose.yml` 會啟動兩個服務：
+`docker-compose.yml` 目前包含 4 個服務：
 
-- `api`
-  - 由根目錄 `Dockerfile` 建置
-  - 容器名稱：`finshark_api`
-  - 對外 port：`${API_OUTER_PORT}`（預設 `5187`）
-  - 依賴 `mssql`
-- `mssql`
-  - 由 `conf/mssql/Dockerfile` 建置（基於 `mcr.microsoft.com/mssql/server:2022-latest`）
-  - 容器名稱：`finshark_mssql`
-  - 對外 port：`${MSSQL_OUTER_PORT}`（預設 `1439`）
-  - 資料 volume 已掛載至 `./data/mssql/mssql_data`
+1. `reverse_proxy`（Nginx）
+   - 掛載：
+     - `./conf/nginx/conf.d` -> `/etc/nginx/conf.d`
+     - `./certs/nginx` -> `/etc/nginx/ssl`
+     - `./frontend/dist` -> `/usr/share/nginx/html`
+   - 對外：
+     - `80`（HTTP，轉 HTTPS）
+     - `443`（HTTPS）
+   - 路由重點（`server_https.conf`）：
+     - `/` -> React 靜態檔（`try_files ... /index.html`）
+     - `/api` -> proxy 到 `api:5187`
 
-## 快速啟動（推薦）
+2. `frontend`
+   - Node 容器跑 `vite` dev server
+   - 對外 `5173:5173`
+   - 主要用於開發除錯（生產環境可只用 Nginx + dist）
+
+3. `api`
+   - ASP.NET Core API
+   - 對外 `5187:5187`
+   - 使用 `appsettings.json` 連線 `mssql:1433`
+
+4. `mssql`
+   - SQL Server 2022
+   - 對外 `1439:1433`
+   - volume 掛載資料、備份、logs、secrets
+
+---
+
+## 關鍵設定檔
+
+### 根目錄 `.env`（Docker 編排）
+
+常用參數：
+- Nginx: `NGINX_HTTP_OUTER_PORT`, `NGINX_HTTPS_OUTER_PORT`
+- Frontend: `FRONTEND_OUTER_PORT`, `FRONTEND_INNER_PORT`
+- API: `API_OUTER_PORT`, `API_INNER_PORT`, `ASPNETCORE_ENVIRONMENT`
+- DB: `MSSQL_OUTER_PORT`, `MSSQL_SA_PASSWORD`
+
+### `frontend/.env`（前端 API Base URL）
+
+目前：
+
+```env
+VITE_API_URL=http://localhost:5187/api/
+```
+
+若使用 Nginx HTTPS 同源部署，建議改為：
+
+```env
+VITE_API_URL=https://localhost/api/
+```
+
+或相對路徑：
+
+```env
+VITE_API_URL=/api/
+```
+
+### `api/Program.cs`
+
+- JWT 驗證與授權
+- CORS policy `AllowReactApp`
+- Swagger（Development 環境）
+- Controllers 路由啟用
+
+---
+
+## 快速啟動（Docker 全套）
 
 1. 進入專案根目錄：
 
@@ -63,34 +111,40 @@ FinShark 是一個以 ASP.NET Core Web API 實作的股票追蹤後端服務，�
 cd FinShark
 ```
 
-2. 檢查 `.env` 參數（至少確認以下值）：
-- `ASPNETCORE_ENVIRONMENT`
-- `API_OUTER_PORT` / `API_INNER_PORT`
-- `MSSQL_SA_PASSWORD`
-- `MSSQL_OUTER_PORT` / `MSSQL_INNER_PORT`
-
-3. 啟動服務：
+2. 前端先建置靜態檔（給 Nginx 掛載）：
 
 ```bash
-docker compose up --build -d
+cd frontend
+npm install
+npm run build
+cd ..
 ```
 
-4. 查看狀態：
+3. 啟動全部服務：
+
+```bash
+docker compose up -d --build
+```
+
+4. 檢查服務：
 
 ```bash
 docker compose ps
+docker compose logs -f reverse_proxy
 docker compose logs -f api
 docker compose logs -f mssql
 ```
 
-5. 驗證 API：
-- `http://localhost:5187/swagger`（若環境為 Development）
+5. 存取入口：
+- 網站：`https://localhost`
+- API（經 Nginx）：`https://localhost/api/...`
+- API（直連）：`http://localhost:5187/...`
 
-## 本機直接執行（不透過 Docker）
+---
 
-1. 先確保 MSSQL 可連線（可用本機 SQL Server，或改用 docker 的 mssql）
-2. 調整 `api/appsettings.json` 連線字串
-3. 執行：
+## 本機分開啟動（不走完整 Docker）
+
+### 後端 API
 
 ```bash
 cd api
@@ -98,60 +152,64 @@ dotnet restore
 dotnet run
 ```
 
-預設本機執行網址可參考 `api/Properties/launchSettings.json`：
-- `http://localhost:5187`
-- `https://localhost:7032`
-
-## 資料庫 Migration
-
-專案已包含 migration 檔案（`api/Migrations`）。
-
-若需更新資料庫：
+### 前端
 
 ```bash
-cd api
-dotnet ef database update
+cd frontend
+npm install
+npm run dev
 ```
 
-## 設定注意事項
+預設前端網址：`http://localhost:5173`
 
-- `api/appsettings.json` 目前預設使用 Docker 服務名稱 `mssql` 作為主機：
-  - `Server=mssql,1433;...`
-- 若本機直接跑 API 且 DB 不在 Docker 網路，請改成實際主機（例如 `localhost,1439`）。
-- `.env` 目前含敏感資訊（例如 `MSSQL_SA_PASSWORD`、JWT 設定），正式環境請務必更換。
+---
 
-## 常見問題排查
+## API 路由摘要
 
-### 1) `專案無法執行` / API 無法連線 DB
+- Account
+  - `POST /api/account/register`
+  - `POST /api/account/login`
+- Stock
+  - `GET /api/stock`（需要 JWT）
+  - `POST /api/stock`
+  - `PUT /api/stock/{id}`
+  - `DELETE /api/stock/{id}`
+- Comment
+  - `GET /api/comment`
+  - `POST /api/comment/{stockId}`
+  - `PUT /api/comment/{id}`
+  - `DELETE /api/comment/{id}`
+- Portfolio
+  - `GET /api/portfolio`（需要 JWT）
+  - `POST /api/portfolio?symbol=...`（需要 JWT）
+  - `DELETE /api/portfolio?symbol=...`（需要 JWT）
 
-- 確認 `mssql` 容器是否已啟動
-- 確認 API 連線字串目標是否正確（Docker 內用 `mssql`，本機用 `localhost`）
-- 確認 SQL port 對映是否衝突（`1439:1433`）
+---
 
-### 2) Swagger 開不起來
+## 常見問題
 
-- `Program.cs` 只在 `Development` 啟用 Swagger
-- `.env` 若設定 `ASPNETCORE_ENVIRONMENT=Production`，Swagger 不會啟動
+### 1) 前端打 API 出現 CORS
 
-### 3) JWT 驗證失敗
+- 前端 origin 與 `Program.cs` CORS 白名單不一致
+- 建議改成同源呼叫：`VITE_API_URL=https://localhost/api/`
 
-- 確認 `appsettings.json` 的 `Jwt:Issuer`、`Audience`、`SigningKey` 一致
-- `Authorization` header 必須使用 `Bearer <token>`
+### 2) `405 Method Not Allowed`
 
-## 常用命令
+- 常見是路徑少了 `/api` 或 HTTP method 不對
+- 例如登入必須是 `POST /api/account/login`
 
-```bash
-# 啟動
-docker compose up --build -d
+### 3) `ERR_EMPTY_RESPONSE`（5173）
 
-# 停止
-docker compose down
+- 容器內 Vite 未對外監聽（需 `--host 0.0.0.0`）
 
-# 查看日誌
-docker compose logs -f api
-docker compose logs -f mssql
+---
 
-# 重新建置 API
-docker compose build api
-docker compose up -d api
-```
+## 畫面展示
+
+### 1. Dashboard 上半部（搜尋 / Create Stock / Stocks List）
+
+![Dashboard-1](./images/1.png)
+
+### 2. Dashboard 下半部（Portfolio / Comments）
+
+![Dashboard-2](./images/2.png)

@@ -1,0 +1,510 @@
+{
+  "info": {
+    "_postman_id": "d5826947-385b-4f34-90b1-447b28ff669a",
+    "name": "ASP.NET Core",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "13694207",
+    "_collection_link": "https://go.postman.co/collection/13694207-d5826947-385b-4f34-90b1-447b28ff669a?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "FinShark",
+      "item": [
+        {
+          "name": "stock",
+          "item": [
+            {
+              "name": "GetAll",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImludmVzdG9yODMzQGdtYWlsLmNvbSIsImdpdmVuX25hbWUiOiJpbnZlc3RvcjgzMyIsIm5iZiI6MTc3MTU5NDg2MCwiZXhwIjoxNzcyMTk5NjYwLCJpYXQiOjE3NzE1OTQ4NjAsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3Q6NTE4NyIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Q6NTE4NyJ9.zio5MfOZhwk1IAue0LQLrkUX6YW_Z9zeozpDjLsDz4X6TXPs70mDDkLWVx3e3WlHzT9v-Z2PQTgkZnVs7Mjoww",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{url}}/stock",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "stock"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "GetAll by query",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImludmVzdG9yODMzQGdtYWlsLmNvbSIsImdpdmVuX25hbWUiOiJpbnZlc3RvcjgzMyIsIm5iZiI6MTc3MTY2MzUxNiwiZXhwIjoxNzcyMjY4MzE2LCJpYXQiOjE3NzE2NjM1MTYsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3Q6NTE4NyIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Q6NTE4NyJ9.bL2lnGz7lP6uJmZRE5kAG26Kqgi5uf6XnHixH9dJ7CuLwHyTn95s4SxUBcS4sXbd3CcGjqxdmy7p8mNA0RIqJQ",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{url}}/stock?SortBy=symbol&IsDescending=true&PageSize=5",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "stock"
+                  ],
+                  "query": [
+                    {
+                      "key": "symbol",
+                      "value": "TSLA",
+                      "disabled": true
+                    },
+                    {
+                      "key": "companyName",
+                      "value": "Microsoft",
+                      "disabled": true
+                    },
+                    {
+                      "key": "SortBy",
+                      "value": "symbol"
+                    },
+                    {
+                      "key": "IsDescending",
+                      "value": "true"
+                    },
+                    {
+                      "key": "PageNumber",
+                      "value": "2",
+                      "disabled": true
+                    },
+                    {
+                      "key": "PageSize",
+                      "value": "5"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "GetById",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{url}}/stock/1",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "stock",
+                    "1"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Create",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"symbol\": \"MSFT\",\r\n  \"companyName\": \"Microsoft\",\r\n  \"purchase\": 1000000000,\r\n  \"lastDiv\": 100,\r\n  \"industry\": \"string\",\r\n  \"marketCap\": 5000000000\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{url}}/stock",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "stock"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Update",
+              "request": {
+                "method": "PUT",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"symbol\": \"AMZN\",\r\n  \"companyName\": \"Amazon\",\r\n  \"purchase\": 340,\r\n  \"lastDiv\": 5.0,\r\n  \"industry\": \"Technology\",\r\n  \"marketCap\": 2435246524624\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{url}}/stock/5",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "stock",
+                    "5"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Remove",
+              "request": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{url}}/stock/5",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "stock",
+                    "5"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "comment",
+          "item": [
+            {
+              "name": "GetAll",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{url}}/comment",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "comment"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "GetById",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{url}}/comment/4",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "comment",
+                    "4"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Create",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImludmVzdG9yODMzQGdtYWlsLmNvbSIsImdpdmVuX25hbWUiOiJpbnZlc3RvcjgzMyIsIm5iZiI6MTc3MTY1OTQ0NCwiZXhwIjoxNzcyMjY0MjQ0LCJpYXQiOjE3NzE2NTk0NDQsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3Q6NTE4NyIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Q6NTE4NyJ9.8coO9accQdZlxxS3_D17Z8E8pkhsmwh1PXPj82RAfJccAAht2CI6ubz5-dKebQW8WenoEyBu33jlJgFVKv6KXA",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"title\": \"Microsoft good!\",\r\n  \"content\": \"I put all my money in Microsoft!\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{url}}/comment/3",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "comment",
+                    "3"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Update",
+              "request": {
+                "method": "PUT",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"title\": \"Apple\",\r\n  \"content\": \"Apple is the best stock!\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{url}}/comment/4",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "comment",
+                    "4"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Remove",
+              "request": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{url}}/comment/5",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "comment",
+                    "5"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "account",
+          "item": [
+            {
+              "name": "Register",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"username\": \"investor833\",\r\n  \"email\": \"investor833@gmail.com\",\r\n  \"password\": \"P@ssword963256\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{url}}/account/register",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "account",
+                    "register"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Login",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"username\": \"investor833\",\r\n  \"password\": \"P@ssword963256\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{url}}/account/login",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "account",
+                    "login"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "portfolio",
+          "item": [
+            {
+              "name": "GetUserPortfolio",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImludmVzdG9yODMzQGdtYWlsLmNvbSIsImdpdmVuX25hbWUiOiJpbnZlc3RvcjgzMyIsIm5iZiI6MTc3MTY1OTQ0NCwiZXhwIjoxNzcyMjY0MjQ0LCJpYXQiOjE3NzE2NTk0NDQsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3Q6NTE4NyIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Q6NTE4NyJ9.8coO9accQdZlxxS3_D17Z8E8pkhsmwh1PXPj82RAfJccAAht2CI6ubz5-dKebQW8WenoEyBu33jlJgFVKv6KXA",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{url}}/portfolio",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "portfolio"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "AddPortfolio",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImludmVzdG9yODMzQGdtYWlsLmNvbSIsImdpdmVuX25hbWUiOiJpbnZlc3RvcjgzMyIsIm5iZiI6MTc3MTU5ODQ0NywiZXhwIjoxNzcyMjAzMjQ3LCJpYXQiOjE3NzE1OTg0NDcsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3Q6NTE4NyIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Q6NTE4NyJ9.yd0BrauSfbOngjZJ41bk_pf584mexA32pAbWHzQfnS_UzotWI-G1vHMWS6jWD6oni0LPa6kLd5wkxOD2tZttMw",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "{{url}}/portfolio?symbol=MSFT",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "portfolio"
+                  ],
+                  "query": [
+                    {
+                      "key": "symbol",
+                      "value": "MSFT"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "DeletePortfolio",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImludmVzdG9yODMzQGdtYWlsLmNvbSIsImdpdmVuX25hbWUiOiJpbnZlc3RvcjgzMyIsIm5iZiI6MTc3MTU5ODQ0NywiZXhwIjoxNzcyMjAzMjQ3LCJpYXQiOjE3NzE1OTg0NDcsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3Q6NTE4NyIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Q6NTE4NyJ9.yd0BrauSfbOngjZJ41bk_pf584mexA32pAbWHzQfnS_UzotWI-G1vHMWS6jWD6oni0LPa6kLd5wkxOD2tZttMw",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{url}}/portfolio?symbol=tsla",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "portfolio"
+                  ],
+                  "query": [
+                    {
+                      "key": "symbol",
+                      "value": "tsla"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "url",
+      "value": "",
+      "disabled": true
+    },
+    {
+      "key": "url",
+      "value": ""
+    },
+    {
+      "value": ""
+    }
+  ]
+}
