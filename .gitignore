@@ -442,3 +442,4 @@ secrets/
 data/
 logs/
 backup/
+temp/
